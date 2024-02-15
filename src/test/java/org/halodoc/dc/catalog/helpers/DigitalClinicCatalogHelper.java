@@ -23,13 +23,13 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
     Map<String, Object> tempMap = new HashMap<>();
     public Response createDCCategory(String status, int categoryLevel,Integer parentId) throws Exception {
         RestClient client = new RestClient(DC_CATALOG_BASE_URL+CREATE_DC_CATEGORY, headers);
-        String request = getCreateDCategoryRequest(status,categoryLevel,parentId);
+        String request = getCreateDCCategoryRequest(status,categoryLevel,parentId);
         tempMap.put("crateCategoryRequest",request);
         return client.executePost(request);
 
     }
 
-    public String getCreateDCategoryRequest(String status, int categoryLevel,Integer parentId) throws IOException {
+    public String getCreateDCCategoryRequest(String status, int categoryLevel, Integer parentId) throws IOException {
         String jsonBody = getRequestFixture("dc_catalog/createDCCategory.json");
         JsonNode jsonNode =JsonUtils.convertJsonToString(jsonBody);
         ( (ObjectNode) jsonNode).put("name",faker.ancient().god());
@@ -41,7 +41,14 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         ( (ObjectNode) jsonNode).put("category_level",categoryLevel);
         return jsonNode.toString();
     }
-    public void verifyCreateDCCategoryResponse(Response response, int expectedResponseCode) throws IOException {
+
+    public void verifyCreateDCCategory(Response response, int expectedResponseCode) throws IOException {
+        verifyCreateDCCategoryResponse(response, expectedResponseCode);
+        validateDCCategoryInDB(JsonUtils.convertJsonToString(response.asString()));
+    }
+
+
+    private void verifyCreateDCCategoryResponse(Response response, int expectedResponseCode) throws IOException {
         Assert.assertEquals(response.getStatusCode(), expectedResponseCode);
         if(expectedResponseCode!=201 || expectedResponseCode!=200){
             return;
@@ -56,7 +63,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         if(expectedJsonNode.has("parent_id")){
             Assert.assertEquals(actualJsonNode.get("parent_id").asInt(),expectedJsonNode.get("parent_id").asInt());
         }
-        validateDCCategoryInDB(actualJsonNode);
+
     }
 
     private void validateDCCategoryInDB(JsonNode actualJsonNode) {

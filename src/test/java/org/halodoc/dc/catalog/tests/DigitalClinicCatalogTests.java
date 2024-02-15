@@ -11,7 +11,7 @@ public class DigitalClinicCatalogTests extends DCBaseTests {
     @Test
     public void createDigitalClinicCategoryTest() throws Exception {
         Response response = dcHelper.createDCCategory("active", 1, null);
-        dcHelper.verifyCreateDCCategoryResponse(response, 201);
+        dcHelper.verifyCreateDCCategory(response, 201);
     }
 
 }
