@@ -6,7 +6,9 @@ import org.testng.annotations.Test;
 
 public class DigitalClinicCatalogTests extends DCBaseTests {
 
-    DigitalClinicCatalogHelper dcHelper = new DigitalClinicCatalogHelper();
+
+    public DigitalClinicCatalogTests() throws Exception {
+    }
 
     @Test
     public void createDigitalClinicCategoryTest() throws Exception {
