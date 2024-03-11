@@ -1,0 +1,11 @@
+{
+  "name":"$name",
+  "code" : "$code",
+  "description":"$description",
+  "status":"$status",
+  "image_url":"http://www.linkdokter.com/user/avatar/18589.jpg",
+  "parent_id": "$parent_id",
+  "display":true,
+  "display_order":1,
+  "category_level":"$category_level"
+}

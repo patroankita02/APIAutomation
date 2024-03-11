@@ -1,16 +1,29 @@
 package org.halodoc.dc.catalog.helpers;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import com.halodoc.utils.http.RestClient;
-import com.halodoc.utils.json.JsonUtils;
-
+import java.sql.Connection;
 import java.util.HashMap;
 
 import static io.dropwizard.testing.FixtureHelpers.fixture;
+import static org.halodoc.dc.catalog.utils.Constants.DIGITAL_CLINIC_DB_PROPERTIES_FILE_PATH;
+import static org.halodoc.dc.catalog.utils.Constants.WAKATOBI_CATALOG_DB_PROPERTIES_FILE_PATH;
+import static org.halodoc.dc.catalog.utils.Constants.TIMOR_CMS_DB_PROPERTIES_FILE_PATH;
+import org.halodoc.dc.catalog.utils.DbUtilities;
 
 public class BaseHelper {
     public static final String FILE_LOCATION = "fixtures";
+
+
+
     Faker faker = new Faker();
+    ObjectMapper objectMapper= new ObjectMapper();
+    public DbUtilities dbUtilities= new DbUtilities();
+    public Connection digitalClinicDBConnection = dbUtilities.getDbConnection(DIGITAL_CLINIC_DB_PROPERTIES_FILE_PATH);
+    public Connection wakatobiCatalogDBConnection = dbUtilities.getDbConnection(WAKATOBI_CATALOG_DB_PROPERTIES_FILE_PATH);
+    public Connection timorCMSDBConnection = dbUtilities.getDbConnection(TIMOR_CMS_DB_PROPERTIES_FILE_PATH);
+
+    public BaseHelper() throws Exception {
+    }
 
     public HashMap<String, String> getAppTokenHeaders(String appToken) {
         HashMap<String, String> headers = new HashMap<String, String>();
