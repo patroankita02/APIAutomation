@@ -1,7 +1,6 @@
 package org.halodoc.dc.catalog.helpers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -12,7 +11,6 @@ import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.halodoc.dc.catalog.utils.DbUtilities;
 import org.testng.Assert;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -21,14 +19,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.halodoc.dc.catalog.utils.Constants.*;
 
-
 @Slf4j
 public class DigitalClinicCatalogHelper extends BaseHelper {
-
     private HashMap<String, String> headers = getAppTokenHeaders(VALID_DC_APP_TOKEN);
 
     Map<String, Object> tempMap = new HashMap<>();
-
 
     public String categoryExternalId;
 
@@ -39,6 +34,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
     public int categoryLevel;
 
     public Integer categoryParentId;
+
     public Integer categoryId;
 
     public String attributeName;
@@ -49,32 +45,28 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     public String benefitPackageId;
 
-
-
-
-
     public DigitalClinicCatalogHelper() throws Exception {
     }
 
-    public Response createDCCategory(String status, int categoryLevel,Integer parentId) throws Exception {
-        RestClient client = new RestClient(DC_CATALOG_BASE_URL+CREATE_DC_CATEGORY, headers);
-        String request = getCreateDCCategoryRequest(status,categoryLevel,parentId);
-        log.info("create category Request: "+request);
-        tempMap.put("crateCategoryRequest",request);
+    public Response createDCCategory(String status, int categoryLevel, Integer parentId) throws Exception {
+        RestClient client = new RestClient(DC_CATALOG_BASE_URL + CREATE_DC_CATEGORY, headers);
+        String request = getCreateDCCategoryRequest(status, categoryLevel, parentId);
+        log.info("create category Request: " + request);
+        tempMap.put("crateCategoryRequest", request);
         return client.executePost(request);
 
     }
 
     public String getCreateDCCategoryRequest(String status, int categoryLevel, Integer parentId) throws IOException {
         String jsonBody = getRequestFixture("dc_catalog/createDCCategory.json");
-        JsonNode jsonNode =JsonUtils.convertJsonToString(jsonBody);
-        ( (ObjectNode) jsonNode).put("name",faker.ancient().god());
-        ( (ObjectNode) jsonNode).put("code",faker.random().hex());
-        ( (ObjectNode) jsonNode).put("status",status);
-        if(parentId!=null){
-            ( (ObjectNode) jsonNode).put("parent_id",parentId);
+        JsonNode jsonNode = JsonUtils.convertJsonToString(jsonBody);
+        ((ObjectNode) jsonNode).put("name", faker.ancient().god());
+        ((ObjectNode) jsonNode).put("code", faker.random().hex());
+        ((ObjectNode) jsonNode).put("status", status);
+        if (parentId != null) {
+            ((ObjectNode) jsonNode).put("parent_id", parentId);
         }
-        ( (ObjectNode) jsonNode).put("category_level",categoryLevel);
+        ((ObjectNode) jsonNode).put("category_level", categoryLevel);
         return jsonNode.toString();
     }
 
@@ -83,29 +75,28 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         validateDCCategoryInDB(JsonUtils.convertJsonToString(response.asString()));
     }
 
-
     private void verifyCreateDCCategoryResponse(Response response, int expectedResponseCode) throws IOException {
         Assert.assertEquals(response.getStatusCode(), expectedResponseCode);
-        if(expectedResponseCode!=201 || expectedResponseCode!=200){
+        if (expectedResponseCode != 201 || expectedResponseCode != 200) {
             return;
         }
         JsonNode expectedJsonNode = JsonUtils.convertJsonToString(tempMap.get("crateCategoryRequest").toString());
         JsonNode actualJsonNode = JsonUtils.convertJsonToString(response.asString());
 
-        Assert.assertEquals(actualJsonNode.get("name").asText(),expectedJsonNode.get("name").asText());
-        Assert.assertEquals(actualJsonNode.get("code").asText(),expectedJsonNode.get("code").asText());
-        Assert.assertEquals(actualJsonNode.get("status").asText(),expectedJsonNode.get("status").asText());
-        Assert.assertEquals(actualJsonNode.get("category_level").asInt(),expectedJsonNode.get("category_level").asInt());
-        if( actualJsonNode.has("parent_id")){
-            Assert.assertEquals(actualJsonNode.get("parent_id").asInt(),expectedJsonNode.get("parent_id").asInt());
+        Assert.assertEquals(actualJsonNode.get("name").asText(), expectedJsonNode.get("name").asText());
+        Assert.assertEquals(actualJsonNode.get("code").asText(), expectedJsonNode.get("code").asText());
+        Assert.assertEquals(actualJsonNode.get("status").asText(), expectedJsonNode.get("status").asText());
+        Assert.assertEquals(actualJsonNode.get("category_level").asInt(), expectedJsonNode.get("category_level").asInt());
+        if (actualJsonNode.has("parent_id")) {
+            Assert.assertEquals(actualJsonNode.get("parent_id").asInt(), expectedJsonNode.get("parent_id").asInt());
         }
 
     }
 
     private void validateDCCategoryInDB(JsonNode actualJsonNode) {
-        String query = "select * from categories where id = "+actualJsonNode.get("id").asInt();
+        String query = "select * from categories where id = " + actualJsonNode.get("id").asInt();
 
-        List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(query,digitalClinicDBConnection);
+        List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(query, digitalClinicDBConnection);
         Assert.assertEquals(dbResponse.size(), 1);
         Assert.assertEquals(dbResponse.get(0).get("name"), actualJsonNode.get("name").asText(), "Name is not matching");
         Assert.assertEquals(dbResponse.get(0).get("code"), actualJsonNode.get("code").asText(), "Code is not matching");
@@ -113,22 +104,11 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         Assert.assertEquals(dbResponse.get(0).get("category_level"), actualJsonNode.get("category_level").asInt(), "Category level is not matching");
 
         if (actualJsonNode.get("parent_id").asText() != "null") {
-            System.out.println("parent_id: " + actualJsonNode.get("parent_id").asText());
-            System.out.println("dbResponse: " + dbResponse.get(0).get("parent_id").toString());
+
             Assert.assertEquals(Integer.valueOf(dbResponse.get(0).get("parent_id").toString()), actualJsonNode.get("parent_id").asInt(),
                     "Parent id is not matching");
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     public Response getCategoryByCategoryExternalId(String categoryExternalId) {
         RestClient client = new RestClient(DC_CATALOG_BASE_URL + GET_DC_CATEGORY.replace("{categoryExternalId}", categoryExternalId), headers);
@@ -149,7 +129,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         ((ObjectNode) jsonNode).put("category_level", categoryLevel);
         ((ObjectNode) jsonNode).put("parent_id", categoryParentId);
         jsonBody = jsonNode.toString();
-        System.out.println("updateDCCategory: " + jsonBody);
+
         String url = DC_CATALOG_BASE_URL + UPDATE_DC_CATEGORY.replace("{categoryExternalId}", categoryExternalId);
         RestClient client = new RestClient(url, headers);
         Response response = client.executePut(jsonBody);
@@ -168,7 +148,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     public Response createDCPackageBenefitMapping(List<Map<String, Object>> packageBenefitMappingList) throws Exception {
         JsonNode jsonNode = objectMapper.valueToTree(packageBenefitMappingList);
-        System.out.println("createDCPackageBenefitMapping: " + jsonNode.toString());
+
         RestClient client = new RestClient(DC_CATALOG_BASE_URL + ADD_DC_PACKAGE_BENEFIT_MAPPING, headers);
         return client.executePost(jsonNode.toString());
 
@@ -186,12 +166,14 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         expectedPackageBenefitResponse.stream().forEach(expectedResponse -> {
             actualPackageBenefitResponse.forEach(actualResponse -> {
 
-                if (actualResponse.get("package_product_id").toString().replace("\"", "").equals(expectedResponse.get("package_product_id").toString())) {
+                if (actualResponse.get("package_product_id").toString().replace("\"", "")
+                                  .equals(expectedResponse.get("package_product_id").toString())) {
                     count.getAndIncrement();
-                    Assert.assertEquals(actualResponse.get("benefit_package_id").toString().replace("\"", ""), expectedResponse.get("benefit_package_id"));
+                    Assert.assertEquals(actualResponse.get("benefit_package_id").toString().replace("\"", ""),
+                            expectedResponse.get("benefit_package_id"));
                     Assert.assertEquals(actualResponse.get("status").toString().replace("\"", ""), expectedResponse.get("status"));
                     Assert.assertEquals(actualResponse.get("is_deleted").toString().replace("\"", ""), expectedResponse.get("is_deleted").toString());
-                    System.out.println("actualResponse: ");
+
                 }
             });
         });
@@ -207,8 +189,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
         expectedPackageBenefitResponse.stream().forEach(expectedPackageBenefit -> {
             packageBenefitMappingInDB.forEach(packageBenefitInDB -> {
-                System.out.println(expectedPackageBenefit.get("package_product_id"));
-                System.out.println(packageBenefitInDB.get("package_product_id"));
+
                 if (expectedPackageBenefit.get("package_product_id").equals(packageBenefitInDB.get("package_product_id"))) {
                     count.getAndIncrement();
 
@@ -224,14 +205,16 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     private List<Map<String, Object>> getDCPackageBenefitMappingInDB(String packageProductId, String benefitPackageId) {
         List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(
-                "select * from package_benefit_mapping where package_product_id = '" + packageProductId + "' and benefit_package_id = '" + benefitPackageId + "'and status='active' and is_deleted=0",digitalClinicDBConnection);
+                "select * from package_benefit_mapping where package_product_id = '" + packageProductId + "' and benefit_package_id = '" + benefitPackageId + "'and status='active' and is_deleted=0",
+                digitalClinicDBConnection);
 
         return dbResponse;
     }
 
     public Response updateDCPackageBenefitMapping(List<Map<String, Object>> packageBenefitMappingList) throws Exception {
         JsonNode jsonNode = objectMapper.valueToTree(packageBenefitMappingList);
-        RestClient client = new RestClient(DC_CATALOG_BASE_URL + UPDATE_DC_PACKAGE_BENEFIT_MAPPING.replace("{package_product_id}", packageProductId), headers);
+        RestClient client = new RestClient(DC_CATALOG_BASE_URL + UPDATE_DC_PACKAGE_BENEFIT_MAPPING.replace("{package_product_id}", packageProductId),
+                headers);
 
         tempMap.put("PackageBenefitRequest", packageBenefitMappingList);
 
@@ -293,7 +276,8 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     private List<Map<String, Object>> getDCMetaAttributesInDB(String metaAttribute1, String metaAttribute2) {
         List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(
-                "select * from category_meta_attributes where name in ( '" + metaAttribute1 + "','" + metaAttribute2 + "')",digitalClinicDBConnection);
+                "select * from category_meta_attributes where name in ( '" + metaAttribute1 + "','" + metaAttribute2 + "')",
+                digitalClinicDBConnection);
 
         return dbResponse;
     }
@@ -370,6 +354,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         Assert.assertEquals(count.get(), expectedMetaAttributes.size());
 
     }
+
     public void verifyDCEntityMappingForCategory(String categoryExternalId, List<Map<String, Object>> expectedEntityMapping,
             Response addEntityMappingResponse, int expectedResponseCode) throws JsonProcessingException, Exception {
 
@@ -395,9 +380,11 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         Assert.assertEquals(count.get(), expectedEntityMapping.size());
 
     }
+
     private List<Map<String, Object>> getDCEntityMappingForCategoryInDB(String categoryExternalId) {
         List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(
-                "select cem.* from categories c,`category_entity_mapping` cem where c.`id`=cem.`category_id` and c.`external_id`='" + categoryExternalId + "'",digitalClinicDBConnection);
+                "select cem.* from categories c,`category_entity_mapping` cem where c.`id`=cem.`category_id` and c.`external_id`='" + categoryExternalId + "'",
+                digitalClinicDBConnection);
 
         return dbResponse;
     }
@@ -424,12 +411,13 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     private List<Map<String, Object>> getDCMetaAttributesForCategoryInDB(String categoryExternalId) {
         List<Map<String, Object>> dbResponse = dbUtilities.getDbDataByQuery(
-                "select ca.* from categories c,`category_attributes` ca where c.`id`=ca.`category_id` and c.`external_id`='" + categoryExternalId + "'",digitalClinicDBConnection);
+                "select ca.* from categories c,`category_attributes` ca where c.`id`=ca.`category_id` and c.`external_id`='" + categoryExternalId + "'",
+                digitalClinicDBConnection);
 
         return dbResponse;
     }
 
-    public void closeDBConnection(){
+    public void closeDBConnection() {
         dbUtilities.closeConnection(digitalClinicDBConnection);
     }
 }
