@@ -419,5 +419,7 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
 
     public void closeDBConnection() {
         dbUtilities.closeConnection(digitalClinicDBConnection);
+        dbUtilities.closeConnection(wakatobiCatalogDBConnection);
+        dbUtilities.closeConnection(timorCMSDBConnection);
     }
 }
