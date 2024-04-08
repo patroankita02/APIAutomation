@@ -1,6 +1,8 @@
 package org.halodoc.dc.catalog.helpers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import com.halodoc.utils.jdbc.DbUtilities;
+
 import java.sql.Connection;
 import java.util.HashMap;
 
@@ -8,9 +10,8 @@ import static io.dropwizard.testing.FixtureHelpers.fixture;
 import static org.halodoc.dc.catalog.utils.Constants.DIGITAL_CLINIC_DB_PROPERTIES_FILE_PATH;
 import static org.halodoc.dc.catalog.utils.Constants.WAKATOBI_CATALOG_DB_PROPERTIES_FILE_PATH;
 import static org.halodoc.dc.catalog.utils.Constants.TIMOR_CMS_DB_PROPERTIES_FILE_PATH;
-import org.halodoc.dc.catalog.utils.DbUtilities;
 
-public class BaseHelper {
+public abstract class BaseHelper {
     public static final String FILE_LOCATION = "fixtures";
 
 
@@ -34,5 +35,11 @@ public class BaseHelper {
 
     public String getRequestFixture( String fileName) {
         return fixture(FILE_LOCATION + "/" + fileName);
+    }
+
+    public void closeDBConnection() {
+        dbUtilities.closeConnection(digitalClinicDBConnection);
+        dbUtilities.closeConnection(wakatobiCatalogDBConnection);
+        dbUtilities.closeConnection(timorCMSDBConnection);
     }
 }

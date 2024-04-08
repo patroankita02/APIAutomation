@@ -2,17 +2,14 @@ package org.halodoc.dc.catalog.helpers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.halodoc.utils.http.RestClient;
 import com.halodoc.utils.json.JsonUtils;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.halodoc.dc.catalog.utils.DbUtilities;
 import org.testng.Assert;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -417,9 +414,5 @@ public class DigitalClinicCatalogHelper extends BaseHelper {
         return dbResponse;
     }
 
-    public void closeDBConnection() {
-        dbUtilities.closeConnection(digitalClinicDBConnection);
-        dbUtilities.closeConnection(wakatobiCatalogDBConnection);
-        dbUtilities.closeConnection(timorCMSDBConnection);
-    }
+
 }
