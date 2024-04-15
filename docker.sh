@@ -1,0 +1,27 @@
+export APPLICATION_TOKEN=efd75f83-889d-4e4d-aad0-184ecf68e78d
+export CONFIG_BRANCH_NAME='kafka-automation'
+export CONFIG_REMOTE_YAMLS='stage.yml'
+export CONFIG_REPOSITORY_GROUP='config-stage'
+export CONFIG_REPOSITORY_NAME='digital-clinic-catalog-config-stage'
+export CONFIG_SERVER_HOST=config-server.stage-k8s.halodoc.com
+export DC_CATALOG_DATABASE_LINK=mysql.stage-rds.halodoc.com
+export DC_CATALOG_DATABASE_PASSWORD=t1m0r4w5
+export DC_CATALOG_DATABASE_USER=timor_user
+export DC_CATALOG_SASL_USER_NAME=hd
+export DEV_TOKEN=10a5717f-e6b6-400c-9b73-0dc5d38a68fe
+export KAFKA_NODE_1=192.168.200.34:9092
+export KAFKA_NODE_2=192.168.200.34:9092
+export KAFKA_NODE_3=192.168.200.34:9092
+export TIMOR_CMS_BASE_URL=192.168.200.34:8082
+export maxmetasize=512m
+export metasize=128m
+export QA_TOKEN=b03c3d0c-a243-4518-af3f-d45a6e88ba33
+export SCHEMA_REGISTRY_URL=https://schema-registry-stage.int.halodoc.com
+export TIME_ZONE='Asia/Jakarta'
+export xmn=512m
+export xms=512m
+export xmx=1024m
+export xss=256k
+export DC_CATALOG_SASL_PASSWORD=hd_pass
+unzip bin/digital-clinic-catalog.jar
+java -jar bin/digital-clinic-catalog.jar server digital-clinic-catalog-kafka-automation.yml
