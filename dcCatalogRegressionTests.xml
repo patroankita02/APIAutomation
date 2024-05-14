@@ -3,7 +3,7 @@
 <suite name="DC catalog regression suite" verbose="1" >
     <test name="DC catalog regression suite">
         <classes>
-            <class name="org.halodoc.dc.catalog.tests.DigitalClinicCatalogTests"/> ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,..,
+            <class name="org.halodoc.dc.catalog.tests.DigitalClinicCatalogTests"/>
         </classes>
     </test>
 </suite>
