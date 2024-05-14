@@ -40,7 +40,7 @@ public class DigitalClinicEntityMappingConsumerTest extends BaseTest{
         // Given
 
         String dcCategoryId="6511ce50-4d61-4e91-9743-1a5623390cf9";
-        String productExternalId="123-123";
+        String productExternalId="123-12356";
         producersUtility.sendMessage("com.halodoc.timor.productPacakge.v1.product_package", null, getProductPackageDCCategoryEventData(dcCategoryId, productExternalId), getHeaders(), producer);
 
         // Then
@@ -52,7 +52,7 @@ public class DigitalClinicEntityMappingConsumerTest extends BaseTest{
         // Given
 
         String dcCategoryId="6511ce50-4d61-4e91-9743-1a5623390cf9NoExist";
-        String productExternalId="123-123";
+        String productExternalId="123-1234";
         producersUtility.sendMessage("com.halodoc.timor.productPacakge.v1.product_package", null, getProductPackageDCCategoryEventData(dcCategoryId, productExternalId), getHeaders(), producer);
 
         // Then
