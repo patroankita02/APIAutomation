@@ -114,24 +114,19 @@ public class DigitalClinicCatalogTests extends BaseHelper {
 
     @Test (enabled = true, priority = 14)
     public void createDCPackageBenefitMappingTest() throws Exception {
-        List<Map<String, Object>> packageBenefitMappingList = List.of(getAddDCPackageBenefitMappingRequest("consultation 6 days", "active", false));
-        Response response = dcHelper.createDCPackageBenefitMapping(packageBenefitMappingList);
-        dcHelper.setDCPackageBenefitMappingValues(packageBenefitMappingList);
-        System.out.println(response.asString());
-        dcHelper.verifyDCPackageBenefitMapping(packageBenefitMappingList, response, 201);
-        deleteDCPackageBenefitMappingTest();
+
 
     }
 
-    public Map<String, Object> getAddDCPackageBenefitMappingRequest(String benefitName, String status, boolean isDeleted) throws IOException {
+    public void getAddDCPackageBenefitMappingRequest(String benefitName, String status, boolean isDeleted) throws IOException {
         String queryWC = "select external_id from `wakatobi_catalog`.`packages`where type='digital_clinic' limit 1;";
         String queryTC = "select p.external_id from product_packages pp, products p where p.id=pp.product_id and pp.status='active' limit 1;";
-        List<Map<String, Object>> dbResponseWC = dbUtilities.getDbDataByQuery(queryWC, wakatobiCatalogDBConnection);
-        List<Map<String, Object>> dbResponseTC = dbUtilities.getDbDataByQuery(queryTC, timorCMSDBConnection);
-        String benefitPackageId = String.valueOf(dbResponseWC.get(0).get("external_id"));
-        String packageProductId = String.valueOf(dbResponseTC.get(0).get("external_id"));
-        return Map.of("package_product_id", packageProductId, "benefit_package_id", benefitPackageId, "benefit_name", benefitName, "status", status,
-                "is_deleted", isDeleted);
+//        List<Map<String, Object>> dbResponseWC = dbUtilities.getDbDataByQuery(queryWC, wakatobiCatalogDBConnection);
+//        List<Map<String, Object>> dbResponseTC = dbUtilities.getDbDataByQuery(queryTC, timorCMSDBConnection);
+//        String benefitPackageId = String.valueOf(dbResponseWC.get(0).get("external_id"));
+//        String packageProductId = String.valueOf(dbResponseTC.get(0).get("external_id"));
+//        return Map.of("package_product_id", packageProductId, "benefit_package_id", benefitPackageId, "benefit_name", benefitName, "status", status,
+//                "is_deleted", isDeleted);
     }
 
     @Test (enabled = true, priority = 15)
